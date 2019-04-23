@@ -12,7 +12,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
-        <activity android:name=".VideoCamera"></activity>
+        <activity android:name=".VideoCamera"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".StillCamera"
             android:exported="true"

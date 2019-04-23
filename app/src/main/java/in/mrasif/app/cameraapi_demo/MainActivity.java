@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             case VideoCamera.VIDEO_REQUEST_CODE: {
                 if (resultCode==RESULT_OK){
                     String videoPath=data.getStringExtra(VideoCamera.URL);
+                    Log.d(TAG, "onActivityResult:VideoPath=> "+videoPath);
                     if (null!=videoPath){
                         ivPreview.setVisibility(View.GONE);
                         vvPreview.setVisibility(View.VISIBLE);
