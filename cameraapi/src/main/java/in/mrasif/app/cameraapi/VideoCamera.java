@@ -104,7 +104,7 @@ public class VideoCamera extends AppCompatActivity {
         btnStop.setOnClickListener(v -> {
             btnStart.setVisibility(View.VISIBLE);
             btnStop.setVisibility(View.GONE);
-            intent.putExtra(StillCamera.URL,video_path);
+            intent.putExtra(VideoCamera.URL,video_path);
             setResult(RESULT_OK,intent);
             finish();
         });
