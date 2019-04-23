@@ -23,14 +23,15 @@
         android:layout_gravity="center">
         <Button
             android:id="@+id/btnStart"
-            android:background="@drawable/btn_sutter"
+            android:background="@drawable/btn_start_recording"
             android:layout_width="45dp"
             android:layout_height="45dp"
             />
         <Button
             android:id="@+id/btnStop"
-            android:text="Stop"
-            android:layout_width="wrap_content"
+            android:background="@drawable/btn_stop_recording"
+            android:visibility="gone"
+            android:layout_width="45dp"
             android:layout_height="45dp"
             />
     </LinearLayout>
