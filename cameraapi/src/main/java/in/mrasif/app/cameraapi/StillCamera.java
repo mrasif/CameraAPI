@@ -11,13 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import in.mrasif.app.cameraapi.helper.CameraPreview;
 import in.mrasif.app.cameraapi.utils.Utils;
@@ -30,17 +27,13 @@ public class StillCamera extends AppCompatActivity {
     public static final String URL="url";
     public static final String WORKING_DIR = "working_directory";
 
-    private Camera mCamera;
     private CameraPreview mPreview;
-
     private Button btnCapture, btnSave, btnCancel;
-    private byte[] image;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_still_camera);
         askForPermission();
     }
@@ -87,36 +80,30 @@ public class StillCamera extends AppCompatActivity {
     }
 
     private void init() {
-        mCamera = getCameraInstance();
-
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        mPreview = new CameraPreview(this);
+        FrameLayout preview = findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-
 
         btnCapture=findViewById(R.id.button_capture);
         btnSave=findViewById(R.id.button_save);
         btnCancel=findViewById(R.id.button_cancel);
 
         btnCapture.setOnClickListener(v -> {
-            mCamera.takePicture(null, null, (byte[] data, Camera camera) -> {
-                image=data;
-                btnSave.setVisibility(View.VISIBLE);
-                btnCancel.setVisibility(View.VISIBLE);
-                btnCapture.setVisibility(View.GONE);
-            });
+            mPreview.takePicture();
+            btnSave.setVisibility(View.VISIBLE);
+            btnCancel.setVisibility(View.VISIBLE);
+            btnCapture.setVisibility(View.GONE);
         });
 
         btnSave.setOnClickListener(v -> {
             Intent intent=getIntent();
             String working_dir=intent.getStringExtra(StillCamera.WORKING_DIR);
-            Log.d(TAG, "onCreate: "+working_dir);
             File photo= new File(Utils.prepareCompleteFilePath("jpg"));
             if (null!=working_dir){
                 photo= new File(Utils.prepareCompleteFilePath(working_dir,"jpg"));
             }
-            saveImage(image,photo);
+            mPreview.savePicture(photo);
             intent.putExtra(StillCamera.URL,photo.getPath());
             setResult(RESULT_OK,intent);
             finish();
@@ -126,37 +113,8 @@ public class StillCamera extends AppCompatActivity {
             btnSave.setVisibility(View.GONE);
             btnCancel.setVisibility(View.GONE);
             btnCapture.setVisibility(View.VISIBLE);
-            mCamera.startPreview();
+            mPreview.startPreview();
         });
-    }
-
-    private boolean saveImage(byte[] image, File photo){
-        boolean isSaved=false;
-        if (photo.exists()) {
-            photo.delete();
-        }
-        try {
-            FileOutputStream fos=new FileOutputStream(photo.getPath());
-            Toast.makeText(this, photo.getPath(), Toast.LENGTH_SHORT).show();
-            fos.write(image);
-            fos.close();
-            isSaved=true;
-        }
-        catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
-        }
-        return isSaved;
-    }
-
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
     }
 
     private boolean checkCameraHardware(Context context) {
@@ -169,10 +127,7 @@ public class StillCamera extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mCamera.release();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mPreview.releasePointerCapture();
-        }
         super.onDestroy();
+        mPreview.destroy();
     }
 }

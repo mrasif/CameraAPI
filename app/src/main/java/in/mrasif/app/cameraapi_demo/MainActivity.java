@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         btnRecordVideo.setOnClickListener(v -> {
             Intent intent=new Intent(MainActivity.this, VideoCamera.class);
             intent.putExtra(VideoCamera.WORKING_DIR, Utils.getWorkingDirectory("CameraAPI_CUSTOM2").getPath());
+            intent.putExtra(VideoCamera.VIDEO_DURARION,10);
             startActivityForResult(intent,VideoCamera.VIDEO_REQUEST_CODE);
         });
     }
