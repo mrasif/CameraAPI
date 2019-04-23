@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -97,9 +98,13 @@ public class VideoCamera extends AppCompatActivity {
 
         btnStart.setOnClickListener(v -> {
             videoPreview.startRecording(video_path);
+            btnStart.setVisibility(View.GONE);
+            btnStop.setVisibility(View.VISIBLE);
         });
         btnStop.setOnClickListener(v -> {
-            intent.putExtra(StillCamera.URL,video_path);
+            btnStart.setVisibility(View.VISIBLE);
+            btnStop.setVisibility(View.GONE);
+            intent.putExtra(VideoCamera.URL,video_path);
             setResult(RESULT_OK,intent);
             finish();
         });
