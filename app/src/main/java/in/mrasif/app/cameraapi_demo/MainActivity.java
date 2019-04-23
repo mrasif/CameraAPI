@@ -81,12 +81,16 @@ public class MainActivity extends AppCompatActivity {
                         ivPreview.setVisibility(View.GONE);
                         vvPreview.setVisibility(View.VISIBLE);
                         MediaController mediaController= new MediaController(this);
-                        mediaController.setAnchorView(vvPreview);
-                        Uri uri = Uri.parse(videoPath);
                         vvPreview.setMediaController(mediaController);
+                        mediaController.setAnchorView(vvPreview);
+                        vvPreview.setVideoPath(videoPath);
+                        vvPreview.start();
+
+
+                        /*Uri uri = Uri.parse(videoPath);
                         vvPreview.setVideoURI(uri);
                         vvPreview.requestFocus();
-                        vvPreview.start();
+                        vvPreview.start();*/
 
                     }
                     Toast.makeText(this, "Video Recorded!\n"+videoPath, Toast.LENGTH_SHORT).show();
