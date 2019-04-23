@@ -95,8 +95,13 @@ public class VideoPreview extends SurfaceView implements SurfaceHolder.Callback 
             recorder.setOrientationHint(90);
 //            recorder.setVideoSize(1080,1080);
             recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+
+//            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+
             recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+
             recorder.setOutputFile(path);
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,6 +119,7 @@ public class VideoPreview extends SurfaceView implements SurfaceHolder.Callback 
     public void stopCapturingVideo() {
         try {
             recorder.stop();
+            recorder.release();
             mCamera.lock();
         } catch (Exception e) {
             e.printStackTrace();
