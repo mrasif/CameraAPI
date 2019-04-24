@@ -3,24 +3,21 @@ package in.mrasif.app.cameraapi.helper;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
-import android.os.Build;
+import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class VideoPreviewHelper extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private byte[] image;
+    private MediaRecorder recorder;
 
-    public CameraPreview(Context context) {
+    public VideoPreviewHelper(Context context) {
         super(context);
         mCamera = getCameraInstance();
 
@@ -100,38 +97,46 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return c; // returns null if camera is unavailable
     }
 
-    public void takePicture(){
-        mCamera.takePicture(null, null, (byte[] data, Camera camera) -> {
-            image=data;
-        });
-    }
-
-    public void savePicture(File path){
-        saveImage(path);
-    }
-
-    public void startPreview(){
-        mCamera.startPreview();
-    }
-
-    public void destroy(){
-        mCamera.release();
-    }
-
-    private boolean saveImage(File photo){
-        boolean isSaved=false;
-        if (photo.exists()) {
-            photo.delete();
-        }
+    public void startRecording(String path) {
         try {
-            FileOutputStream fos=new FileOutputStream(photo.getPath());
-            fos.write(image);
-            fos.close();
-            isSaved=true;
+            mCamera.unlock();
+            recorder = new MediaRecorder();
+            recorder.setCamera(mCamera);
+            recorder.setOrientationHint(90);
+//            recorder.setVideoSize(1080,1080);
+            recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+
+//            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+
+            recorder.setOutputFile(path);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
+
+        try {
+            recorder.setPreviewDisplay(mHolder.getSurface());
+            recorder.prepare();
+            recorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return isSaved;
     }
+
+    public void stopCapturingVideo() {
+        try {
+            recorder.stop();
+            recorder.release();
+            mCamera.lock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }

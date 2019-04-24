@@ -3,7 +3,6 @@ package in.mrasif.app.cameraapi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -15,7 +14,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import in.mrasif.app.cameraapi.helper.VideoPreview;
+import in.mrasif.app.cameraapi.helper.VideoPreviewHelper;
 import in.mrasif.app.cameraapi.utils.Utils;
 
 public class VideoCamera extends AppCompatActivity {
@@ -26,7 +25,7 @@ public class VideoCamera extends AppCompatActivity {
     public static final String URL="url";
     public static final String WORKING_DIR = "working_directory";
 
-    private VideoPreview videoPreview;
+    private VideoPreviewHelper videoPreviewHelper;
     private Button btnStart, btnStop;
     private TextView tvTitle;
     private String video_path;
@@ -80,9 +79,9 @@ public class VideoCamera extends AppCompatActivity {
     }
 
     private void init() {
-        videoPreview = new VideoPreview(this);
+        videoPreviewHelper = new VideoPreviewHelper(this);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(videoPreview);
+        preview.addView(videoPreviewHelper);
 
         btnStart=findViewById(R.id.btnStart);
         btnStop=findViewById(R.id.btnStop);
@@ -103,12 +102,12 @@ public class VideoCamera extends AppCompatActivity {
             if (duration>0){
                 reverseTimer(duration,tvTitle);
             }
-            videoPreview.startRecording(video_path);
+            videoPreviewHelper.startRecording(video_path);
             btnStart.setVisibility(View.GONE);
             btnStop.setVisibility(View.VISIBLE);
         });
         btnStop.setOnClickListener(v -> {
-            videoPreview.stopCapturingVideo();
+            videoPreviewHelper.stopCapturingVideo();
             btnStart.setVisibility(View.VISIBLE);
             btnStop.setVisibility(View.GONE);
             intent.putExtra(VideoCamera.URL,video_path);

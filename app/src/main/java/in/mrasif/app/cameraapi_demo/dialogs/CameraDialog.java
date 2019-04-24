@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import in.mrasif.app.cameraapi.helper.CameraPreview;
+import in.mrasif.app.cameraapi.helper.CameraPreviewHelper;
 import in.mrasif.app.cameraapi.utils.Utils;
 import in.mrasif.app.cameraapi_demo.MainActivity;
 import in.mrasif.app.cameraapi_demo.R;
@@ -20,7 +20,7 @@ public class CameraDialog extends Dialog {
     MainActivity activity;
     FrameLayout preview;
     Button btnCapture, btnSave, btnCancel;
-    CameraPreview cameraPreview;
+    CameraPreviewHelper cameraPreviewHelper;
 
     public CameraDialog(Context context, MainActivity activity) {
         super(context);
@@ -32,12 +32,12 @@ public class CameraDialog extends Dialog {
         btnSave=findViewById(R.id.button_save);
         btnCancel=findViewById(R.id.button_cancel);
 
-        cameraPreview=new CameraPreview(activity);
-        preview.addView(cameraPreview);
+        cameraPreviewHelper =new CameraPreviewHelper(activity);
+        preview.addView(cameraPreviewHelper);
 
 
         btnCapture.setOnClickListener(v -> {
-            cameraPreview.takePicture();
+            cameraPreviewHelper.takePicture();
             btnSave.setVisibility(View.VISIBLE);
             btnCancel.setVisibility(View.VISIBLE);
             btnCapture.setVisibility(View.GONE);
@@ -45,7 +45,7 @@ public class CameraDialog extends Dialog {
 
         btnSave.setOnClickListener(v -> {
             File photo= new File(Utils.prepareCompleteFilePath("jpg"));
-            cameraPreview.savePicture(photo);
+            cameraPreviewHelper.savePicture(photo);
             Toast.makeText(context, "Image saved!\n"+photo.getPath(), Toast.LENGTH_SHORT).show();
             dismiss();
         });
@@ -54,7 +54,7 @@ public class CameraDialog extends Dialog {
             btnSave.setVisibility(View.GONE);
             btnCancel.setVisibility(View.GONE);
             btnCapture.setVisibility(View.VISIBLE);
-            cameraPreview.startPreview();
+            cameraPreviewHelper.startPreview();
         });
     }
 
