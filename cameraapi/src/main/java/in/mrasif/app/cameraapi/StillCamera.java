@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import android.widget.FrameLayout;
 
 import java.io.File;
 
-import in.mrasif.app.cameraapi.helper.CameraPreview;
+import in.mrasif.app.cameraapi.helper.CameraPreviewHelper;
 import in.mrasif.app.cameraapi.utils.Utils;
 
 public class StillCamera extends AppCompatActivity {
@@ -27,7 +26,7 @@ public class StillCamera extends AppCompatActivity {
     public static final String URL="url";
     public static final String WORKING_DIR = "working_directory";
 
-    private CameraPreview mPreview;
+    private CameraPreviewHelper cameraPreviewHelper;
     private Button btnCapture, btnSave, btnCancel;
 
 
@@ -81,16 +80,16 @@ public class StillCamera extends AppCompatActivity {
 
     private void init() {
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this);
+        cameraPreviewHelper = new CameraPreviewHelper(this);
         FrameLayout preview = findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+        preview.addView(cameraPreviewHelper);
 
         btnCapture=findViewById(R.id.button_capture);
         btnSave=findViewById(R.id.button_save);
         btnCancel=findViewById(R.id.button_cancel);
 
         btnCapture.setOnClickListener(v -> {
-            mPreview.takePicture();
+            cameraPreviewHelper.takePicture();
             btnSave.setVisibility(View.VISIBLE);
             btnCancel.setVisibility(View.VISIBLE);
             btnCapture.setVisibility(View.GONE);
@@ -103,7 +102,7 @@ public class StillCamera extends AppCompatActivity {
             if (null!=working_dir){
                 photo= new File(Utils.prepareCompleteFilePath(working_dir,"jpg"));
             }
-            mPreview.savePicture(photo);
+            cameraPreviewHelper.savePicture(photo);
             intent.putExtra(StillCamera.URL,photo.getPath());
             setResult(RESULT_OK,intent);
             finish();
@@ -113,7 +112,7 @@ public class StillCamera extends AppCompatActivity {
             btnSave.setVisibility(View.GONE);
             btnCancel.setVisibility(View.GONE);
             btnCapture.setVisibility(View.VISIBLE);
-            mPreview.startPreview();
+            cameraPreviewHelper.startPreview();
         });
     }
 
@@ -128,6 +127,6 @@ public class StillCamera extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPreview.destroy();
+        cameraPreviewHelper.destroy();
     }
 }
