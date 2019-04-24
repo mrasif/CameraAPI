@@ -3,10 +3,14 @@ package in.mrasif.app.cameraapi.helper;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
@@ -14,10 +18,11 @@ import static android.content.ContentValues.TAG;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private byte[] image;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context) {
         super(context);
-        mCamera = camera;
+        mCamera = getCameraInstance();
 
         Camera.Parameters parameters = mCamera.getParameters();
         if (this.getResources().getConfiguration().orientation !=
@@ -82,5 +87,51 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e){
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
+    }
+
+    private Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+    public void takePicture(){
+        mCamera.takePicture(null, null, (byte[] data, Camera camera) -> {
+            image=data;
+        });
+    }
+
+    public void savePicture(File path){
+        saveImage(path);
+    }
+
+    public void startPreview(){
+        mCamera.startPreview();
+    }
+
+    public void destroy(){
+        mCamera.release();
+    }
+
+    private boolean saveImage(File photo){
+        boolean isSaved=false;
+        if (photo.exists()) {
+            photo.delete();
+        }
+        try {
+            FileOutputStream fos=new FileOutputStream(photo.getPath());
+            fos.write(image);
+            fos.close();
+            isSaved=true;
+        }
+        catch (java.io.IOException e) {
+            Log.e("PictureDemo", "Exception in photoCallback", e);
+        }
+        return isSaved;
     }
 }

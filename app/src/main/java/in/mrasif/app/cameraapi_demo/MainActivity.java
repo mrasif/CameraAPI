@@ -21,10 +21,11 @@ import java.io.File;
 import in.mrasif.app.cameraapi.StillCamera;
 import in.mrasif.app.cameraapi.VideoCamera;
 import in.mrasif.app.cameraapi.utils.Utils;
+import in.mrasif.app.cameraapi_demo.dialogs.CameraDialog;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    Button btnCaptureImage, btnRecordVideo;
+    Button btnCaptureImage, btnRecordVideo, btnCameraDialog;
     ImageView ivPreview;
     VideoView vvPreview;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnCaptureImage=findViewById(R.id.btnCaptureImage);
         btnRecordVideo=findViewById(R.id.btnRecordVideo);
+        btnCameraDialog=findViewById(R.id.btnCameraDialog);
         ivPreview=findViewById(R.id.ivPreview);
         vvPreview=findViewById(R.id.vvPreview);
 
@@ -47,7 +49,13 @@ public class MainActivity extends AppCompatActivity {
         btnRecordVideo.setOnClickListener(v -> {
             Intent intent=new Intent(MainActivity.this, VideoCamera.class);
             intent.putExtra(VideoCamera.WORKING_DIR, Utils.getWorkingDirectory("CameraAPI_CUSTOM2").getPath());
+            intent.putExtra(VideoCamera.VIDEO_DURARION,10);
             startActivityForResult(intent,VideoCamera.VIDEO_REQUEST_CODE);
+        });
+
+        btnCameraDialog.setOnClickListener(v -> {
+            CameraDialog dialog=new CameraDialog(MainActivity.this,MainActivity.this);
+            dialog.show();
         });
     }
 

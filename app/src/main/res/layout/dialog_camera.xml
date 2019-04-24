@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".VideoCamera">
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,17 +18,28 @@
         android:gravity="center"
         android:layout_gravity="center">
         <Button
-            android:id="@+id/btnStart"
-            android:background="@drawable/btn_start_recording"
+            android:id="@+id/button_capture"
+            android:background="@drawable/btn_sutter"
             android:layout_width="45dp"
             android:layout_height="45dp"
             />
         <Button
-            android:id="@+id/btnStop"
-            android:background="@drawable/btn_stop_recording"
+            android:id="@+id/button_save"
+            android:background="@drawable/btn_check"
             android:visibility="gone"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <Button
+            android:id="@+id/button_cancel"
+            android:background="@drawable/btn_cancel"
+            android:visibility="gone"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             />
     </LinearLayout>
 
